@@ -49,7 +49,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
     if ( !$target_distros -or ($wsl_distro -in $target_distros) ) {
         # The wsl_distro is marked for processing
         $size1 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length / 1MB
-        $estimated = ((wsl -d "$wsl_distro" -e df /) | select-string "\d (\d+) \d").Matches[0].Groups[1].Value
+        $estimated = ((wsl -d "$wsl_distro" -e df /) | select-string " +\d+ +(\d+)").Matches[0].Groups[1].Value
         $estimated = [long]$estimated * 1024
         Write-Host " Processing: $wsl_distro distro"
         Write-Host " Image file: $wsl_path\ext4.vhdx"
@@ -59,7 +59,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
         if (($estimated * $sf) -lt $freedisk) {
              # There is enough free space in the TEMP drive
             if (!($info))
-            {   # we are not in simulation mode.
+            {   # we are not in info mode.
                 Write-Host " Compacting image..." -NoNewLine
                 wsl --shutdown
                 cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 

@@ -9,9 +9,9 @@ It compacts the vhdx virtual images of the WSL2 distros. It ensures the minimum 
 - Name
 - image file location
 - Current size of the image file
-- Estimated size after compacting
+- Estimated compacted size
 
-By default it will perform in compact mode. and if no distro is specified, it will compact all the images sequentially.
+By default it will perform in compact mode. and if no distro is specified, it will compact all the installed images sequentially.
 
 
 ## USAGE
