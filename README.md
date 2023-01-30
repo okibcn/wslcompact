@@ -14,6 +14,25 @@ The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 fi
 By default it will perform in compact mode. and if no distro is specified, it will compact all the installed images sequentially providing also the info about the resulting compacted size.
 
 
+## INSTALLATION
+
+The easier way to install nano is by using **[Scoop package manager](https://scoop.sh/)**.
+
+1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
+```pwsh
+> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
+> irm get.scoop.sh | iex
+```
+2. Add the wslcompact utility directly from its bucket:
+```pwsh
+> scoop bucket add .oki https://github.com/okibcn/Bucket
+> scoop install wslcompact
+```
+To remove the app just type:
+```pwsh
+> scoop uninstall wslcompact
+```
+
 ## USAGE
 
 The usage is straightforward. Calling `wslcompact` without arguments compacts all the WSL images. Or you can compact a single one passing its name as an argument, for instance `wslcompact Ubuntu`. It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. The list of names of the installed distros is accessible by typing `wsl -l` in any powershell terminal. with the `-i` info mode, it wont compact the images providing only the info.
@@ -38,23 +57,3 @@ $env:TEMP="Z:\your temp\folder"
 wslcompact
 ```
 The new TEMP folder will be active only for that PowerShell terminal session, so no problem at all for the rest of the system and it won't leave garbage.
-
-
-## INSTALLATION
-
-The easier way to install nano is by using **[Scoop package manager](https://scoop.sh/)**.
-
-1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
-```pwsh
-> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
-> irm get.scoop.sh | iex
-```
-2. Add the wslcompact utility directly from its bucket:
-```pwsh
-> scoop bucket add .oki https://github.com/okibcn/Bucket
-> scoop install wslcompact
-```
-To remove the app just type:
-```pwsh
-> scoop uninstall wslcompact
-```
