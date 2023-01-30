@@ -1,3 +1,6 @@
+if(!$args) { "usage: wslcompact <distro>"; exit 1 }
+# Version v0.2
+
 $sf=1.05
 $tmp_folder = "$Env:TEMP\wslcompact"
 $freedisk=(Get-PSDrive $env:TEMP[0]).free
@@ -17,6 +20,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
         Write-Host " Estimating target size..." -NoNewLine
         Write-Host ([long]($estimated/1MB*((($sf-1)/2)+1)))"±"([long]($estimated/1MB*($sf-1)/2))"MB"
         if (($estimated*$sf) -lt $freedisk){
+            # There is enough free space in the TEMP drive
             Write-Host " Compacting image..." -NoNewLine
             wsl --shutdown
             cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 
@@ -26,6 +30,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
             $size2 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
             Write-Host " Compacted from $size1 MB to $size2 MB`n"
         } else {
+            # There isn't enough free space in the TEMP drive
             write-Host " WARNING: there isn't enough free space in temp drive"(Get-PSDrive $env:TEMP[0])"to process $wsl_distro."
             write-Host "          There are only"([long]($freedisk/1MB))"MB available."
             write-Host ""
