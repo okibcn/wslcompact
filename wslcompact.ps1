@@ -33,7 +33,10 @@ if ($help) {
         -i   runs in info mode, providing data and estimation without compacting.
         -h   prints this help
 
-    Examples: wslcompact; wslcompact -i; wslcompact Ubuntu Kali
+    Examples: 
+        wslcompact
+        wslcompact -i
+        wslcompact Ubuntu Kali
 
     "
     exit 0
@@ -60,7 +63,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
              # There is enough free space in the TEMP drive
             if (!($info))
             {   # we are not in info mode.
-                Write-Host " Compacting image..." -NoNewLine
+                Write-Host " "  -NoNewLine
                 wsl --shutdown
                 cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 
                 wsl --shutdown
