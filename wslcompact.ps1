@@ -25,9 +25,9 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
             Write-Host " $wsl_distro image file: $wsl_path\ext4.vhdx"
             Write-Host " Compacted from $size1 MB to $size2 MB`n"
         } else {
-            write-Host " WARNING: there isn't enough free space in your "(Get-PSDrive $env:TEMP[0])": drive"
-            write-Host "          to process $wsl_distro. There are only "($freespace/1MB)" MB available."
-            write-Host "          
+            write-Host " WARNING: there isn't enough free space in temp drive"(Get-PSDrive $env:TEMP[0])"to process $wsl_distro."
+            write-Host "          There are only"([long]($freedisk/1MB))"MB available."
+            write-Host ""
             write-Host " Please, change the TEMP folder to a drive with at least"([long]($estimated *$sf/1MB))"MB of free space."
             write-Host " You cand do it by typing `$env:TEMP=`"Z:/your/new/temp/folder`" before using wslcompact.`n`""
         }
