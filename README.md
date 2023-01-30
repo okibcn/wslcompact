@@ -1,45 +1,45 @@
-# wslclean
-Compacts the size of the WSL images by removing unused space.
+# WSL Compact
+
+Compacts the size of the WSL images by removing unused empty space.
 
 
-## INSTALL
+## FEATURES
 
-Just edit the default profile with `notepad $PROFILE` in powershell, and add the following function anywhere:
+It compacts the vhdx virtual images of the WSL2 distros. It ensures the minimum size possible. The program provides the following info for each installed distro:
+- Name
+- image file location
+- Current size of the image file
+- Estimated size after compacting
 
-```powershell
-function wslcompact($distro){
-  $tmp_folder = "$Env:TEMP\wslcompact"
-  mkdir "$tmp_folder" -ErrorAction SilentlyContinue | Out-Null
-  Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach-Object {
-    $wsl_=Get-ItemProperty $_.PSPath
-    $wsl_distro=$wsl_.DistributionName
-    $wsl_path=if ($wsl_.BasePath.StartsWith('\\')) {$wsl_.BasePath.Substring(4)} else {$wsl_.BasePath}
-    if ( !$distro -or ($distro -eq $wsl_distro) ){
-      echo "Creating optimized $wsl_distro image."
-      $size1 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
-      wsl --shutdown
-      cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 
-      wsl --shutdown
-      Move-Item "$tmp_folder/ext4.vhdx" "$wsl_path" -Force
-      wsl --unregister wslclean | Out-Null
-      $size2 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
-      echo "$wsl_distro image file: $wsl_path\ext4.vhdx"
-      echo "Compacted from $size1 MB to $size2 MB"
-    }
-  }
-  Remove-Item -Recurse -Force "$tmp_folder"
-}
-```
+By default it will perform in compact mode. and if no distro is specified, it will compact all the images sequentially.
 
-Close the PowerShell terminal and reopen it again to ensure the updated profile is active, or just type `. $PROFILE`.
 
 ## USAGE
 
-The usage is straightforward. Calling `wslcompact` without arguments compacts all the WSL images. Or you can compact a single one passing its name as an argument, for instance `wslcompact Ubuntu`. It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. The list of names of the installed distros is accessible by typing `wsl -l` in any powershell terminal.
+The usage is straightforward. Calling `wslcompact` without arguments compacts all the WSL images. Or you can compact a single one passing its name as an argument, for instance `wslcompact Ubuntu`. It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. The list of names of the installed distros is accessible by typing `wsl -l` in any powershell terminal. with the `-i` info mode, it wont compact the images providing only the info.
 
-if your C: drive doesn't have enough temporal free space, just change the TEMP folder before calling the function. So, instead of a simple `wslcompact`, just do:
+    Usage: wslcompact [OPTION] [DISTROS]
+
+    compacts the image file of the DISTROS. If no distro is provided it will compact all the images.
+
+    Options:
+        -i   run in info mode, providing data without compacting.
+        -h   prints this help
+
+    Examples: 
+        wslcompact
+        wslcompact -i
+        wslcompact Ubuntu Kali
+
+
+if your C: drive doesn't have enough temporal free space, the program won't compact that distro. Just change the TEMP folder before calling the function. So, instead of a simple `wslcompact`, just do:
 ```pwsh
 $env:TEMP="Z:\your temp\folder"
 wslcompact
 ```
 The new TEMP folder will be active only for that PowerShell terminal session, so no problem at all for the rest of the system and it won't leave garbage.
+
+
+## INSTALLATION
+
+TBD
