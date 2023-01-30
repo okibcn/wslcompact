@@ -6,12 +6,12 @@ Compacts the size of the WSL images by removing unused empty space.
 ## FEATURES
 
 The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 filesystem, but it lacks an effective way to shrink the image when the files are removed. This utility compacts the vhdx virtual images of the WSL2 distros. It achieves the minimum possible size. The program provides the following info for each installed distro:
-- Name
-- image file location
-- Current size of the image file
-- Estimated compacted size
+- Distro's name.
+- image file location.
+- Current size of the image file.
+- Estimated compacted size.
 
-By default it will perform in compact mode. and if no distro is specified, it will compact all the installed images sequentially providing also the info about the resulting compacted size.
+By default it will perform in active mode. and if no distro is specified, it will compact all the installed images sequentially providing also the info about the resulting compacted size.
 
 
 ## INSTALLATION
@@ -20,21 +20,21 @@ The easier way to install nano is by using **[Scoop package manager](https://sco
 
 1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
 ```pwsh
-> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
-> irm get.scoop.sh | iex
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
+irm get.scoop.sh | iex
 ```
 2. Add the wslcompact utility directly from its bucket:
 ```pwsh
-> scoop bucket add .oki https://github.com/okibcn/Bucket
-> scoop install wslcompact
+scoop bucket add .oki https://github.com/okibcn/Bucket
+scoop install wslcompact
 ```
 To update the app just type:
 ```pwsh
-> scoop update wslcompact
+scoop update wslcompact
 ```
 To remove the app just type:
 ```pwsh
-> scoop uninstall wslcompact
+scoop uninstall wslcompact
 ```
 
 ## USAGE
