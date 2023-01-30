@@ -16,13 +16,13 @@ $target_distros = foreach ($arg in $args) {
         $help = $help -or ("Hh" -match $arg[1])
     }
 }
-Write-Output " WSL compact, v2.2023.01.29
+Write-Host " WSL compact, v2.2023.01.29
  (C) 2023 Oscar Lopez. 
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
  "
 
 if ($help) {
-    Write-Output "
+    Write-Host "
     Usage: wslcompact [OPTION] [DISTROS]
 
     Compacts the image file of the DISTROS. If no distro is provided it will compact all the images.
@@ -47,38 +47,38 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
     $wsl_distro = $wsl_.DistributionName
     $wsl_path = if ($wsl_.BasePath.StartsWith('\\')) { $wsl_.BasePath.Substring(4) } else { $wsl_.BasePath }
     if ( !$target_distros -or ($wsl_distro -in $target_distros) ) {
-        # The distro is marked for processing
+        # The wsl_distro is marked for processing
         $size1 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length / 1MB
         $estimated = ((wsl -d "$wsl_distro" -e df /) | select-string "\d (\d+) \d").Matches[0].Groups[1].Value
         $estimated = [long]$estimated * 1024
-        Write-Output " Processing: $wsl_distro distro"
-        Write-Output " Image file: $wsl_path\ext4.vhdx"
-        Write-Output " Image size: $size1 MB"
-        Write-Output " Estimating target size..." -NoNewLine
-        Write-Output ([long]($estimated / 1MB * ((($sf - 1) / 2) + 1)))"±"([long]($estimated / 1MB * ($sf - 1) / 2))"MB"
+        Write-Host " Processing: $wsl_distro distro"
+        Write-Host " Image file: $wsl_path\ext4.vhdx"
+        Write-Host " Image size: $size1 MB"
+        Write-Host " Estimating target size..." -NoNewLine
+        Write-Host "$([long]($estimated / 1MB * ((($sf - 1) / 2) + 1))) ± $([long]($estimated / 1MB * ($sf - 1) / 2)) MB"
         if (($estimated * $sf) -lt $freedisk) {
              # There is enough free space in the TEMP drive
             if (!($info))
             {   # we are not in simulation mode.
-                Write-Output " Compacting image..." -NoNewLine
+                Write-Host " Compacting image..." -NoNewLine
                 wsl --shutdown
                 cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 
                 wsl --shutdown
                 Move-Item "$tmp_folder/ext4.vhdx" "$wsl_path" -Force
                 wsl --unregister wslclean | Out-Null
                 $size2 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length / 1MB
-                Write-Output " Compacted from $size1 MB to $size2 MB`n"
+                Write-Host " Compacted from $size1 MB to $size2 MB`n"
             }        
         }
         else {
             # There isn't enough free space in the TEMP drive
-            write-Output " WARNING: there isn't enough free space in temp drive"(Get-PSDrive $env:TEMP[0])"to process $wsl_distro."
-            write-Output "          There are only"([long]($freedisk / 1MB))"MB available."
-            write-Output ""
-            write-Output " Please, change the TEMP folder to a drive with at least"([long]($estimated * $sf / 1MB))"MB of free space."
-            write-Output " You cand do it by typing `$env:TEMP=`"Z:/your/new/temp/folder`" before using wslcompact.`n"
+            write-Host " WARNING: there isn't enough free space in temp drive"(Get-PSDrive $env:TEMP[0])"to process $wsl_distro."
+            write-Host "          There are only"([long]($freedisk / 1MB))"MB available."
+            write-Host ""
+            write-Host " Please, change the TEMP folder to a drive with at least"([long]($estimated * $sf / 1MB))"MB of free space."
+            write-Host " You cand do it by typing `$env:TEMP=`"Z:/your/new/temp/folder`" before using wslcompact.`n"
         }
     }
 }
 Remove-Item -Recurse -Force "$tmp_folder"
-write-Output ""
+write-Host ""
