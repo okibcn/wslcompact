@@ -1,4 +1,4 @@
-$sf=1.10
+$sf=1.05
 $tmp_folder = "$Env:TEMP\wslcompact"
 $freedisk=(Get-PSDrive $env:TEMP[0]).free
 mkdir "$tmp_folder" -ErrorAction SilentlyContinue | Out-Null
@@ -11,11 +11,11 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
         $size1 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
         $estimated=((wsl -d "$wsl_distro" -e df /) | select-string "\d (\d+) \d").Matches[0].Groups[1].Value
         $estimated=[long]$estimated*1024
-        Write-Host " Processing $wsl_distro image:"
+        Write-Host " Processing: $wsl_distro distro"
         Write-Host " Image file: $wsl_path\ext4.vhdx"
         Write-Host " Image size: $size1 MB"
         Write-Host " Estimating target size..." -NoNewLine
-        Write-Host ([long]($estimated/1MB*1.05))"MB ± 5%"
+        Write-Host ([long]($estimated/1MB*((($sf-1)/2)+1)))"±"([long]($estimated/1MB*($sf-1)/2))"MB"
         if (($estimated*$sf) -lt $freedisk){
             Write-Host " Compacting image..." -NoNewLine
             wsl --shutdown
@@ -30,7 +30,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
             write-Host "          There are only"([long]($freedisk/1MB))"MB available."
             write-Host ""
             write-Host " Please, change the TEMP folder to a drive with at least"([long]($estimated *$sf/1MB))"MB of free space."
-            write-Host " You cand do it by typing `$env:TEMP=`"Z:/your/new/temp/folder`" before using wslcompact.`n`""
+            write-Host " You cand do it by typing `$env:TEMP=`"Z:/your/new/temp/folder`" before using wslcompact.`n"
         }
     }
 }
