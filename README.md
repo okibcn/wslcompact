@@ -42,4 +42,19 @@ The new TEMP folder will be active only for that PowerShell terminal session, so
 
 ## INSTALLATION
 
-TBD
+The easier way to install nano is by using **[Scoop package manager](https://scoop.sh/)**.
+
+1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
+```pwsh
+> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
+> irm get.scoop.sh | iex
+```
+2. Add the wslcompact utility directly from its bucket:
+```pwsh
+> scoop bucket add .oki https://github.com/okibcn/Bucket
+> scoop install wslcompact
+```
+To remove the app just type:
+```pwsh
+> scoop uninstall wslcompact
+```
