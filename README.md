@@ -1,17 +1,17 @@
-# WSL Compact
+# WSLCOMPACT
 
 Compacts the size of the WSL images by removing unused empty space.
 
 
 ## FEATURES
 
-It compacts the vhdx virtual images of the WSL2 distros. It ensures the minimum size possible. The program provides the following info for each installed distro:
+The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 filesystem, but it lacks an effective way to shrink the image when the files are removed. This utility compacts the vhdx virtual images of the WSL2 distros. It achieves the minimum possible size. The program provides the following info for each installed distro:
 - Name
 - image file location
 - Current size of the image file
 - Estimated compacted size
 
-By default it will perform in compact mode. and if no distro is specified, it will compact all the installed images sequentially.
+By default it will perform in compact mode. and if no distro is specified, it will compact all the installed images sequentially providing also the info about the resulting compacted size.
 
 
 ## USAGE
