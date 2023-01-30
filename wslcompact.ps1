@@ -8,21 +8,22 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
     $wsl_distro=$wsl_.DistributionName
     $wsl_path=if ($wsl_.BasePath.StartsWith('\\')) {$wsl_.BasePath.Substring(4)} else {$wsl_.BasePath}
     if ( !$distro -or ($distro -eq $wsl_distro) ){
-        Write-Host " Processing $wsl_distro image:"
         $size1 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
-        Write-Host " Current size: $size1 MB"
-        Write-Host " Estimating target size..." -NoNewLine
         $estimated=((wsl -d "$wsl_distro" -e df /) | select-string "\d (\d+) \d").Matches[0].Groups[1].Value
         $estimated=[long]$estimated*1024
-        Write-Host ([long]($estimated/1MB))"MB ± 10%"
+        Write-Host " Processing $wsl_distro image:"
+        Write-Host " Image file: $wsl_path\ext4.vhdx"
+        Write-Host " Image size: $size1 MB"
+        Write-Host " Estimating target size..." -NoNewLine
+        Write-Host ([long]($estimated/1MB*1.05))"MB ± 5%"
         if (($estimated*$sf) -lt $freedisk){
+            Write-Host " Compacting image..." -NoNewLine
             wsl --shutdown
             cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -" 
             wsl --shutdown
             Move-Item "$tmp_folder/ext4.vhdx" "$wsl_path" -Force
             wsl --unregister wslclean | Out-Null
             $size2 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length/1MB
-            Write-Host " $wsl_distro image file: $wsl_path\ext4.vhdx"
             Write-Host " Compacted from $size1 MB to $size2 MB`n"
         } else {
             write-Host " WARNING: there isn't enough free space in temp drive"(Get-PSDrive $env:TEMP[0])"to process $wsl_distro."
@@ -34,6 +35,3 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
     }
 }
 Remove-Item -Recurse -Force "$tmp_folder"
-
-
-
