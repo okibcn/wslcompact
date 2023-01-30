@@ -28,6 +28,10 @@ The easier way to install nano is by using **[Scoop package manager](https://sco
 > scoop bucket add .oki https://github.com/okibcn/Bucket
 > scoop install wslcompact
 ```
+To update the app just type:
+```pwsh
+> scoop update wslcompact
+```
 To remove the app just type:
 ```pwsh
 > scoop uninstall wslcompact
@@ -35,7 +39,12 @@ To remove the app just type:
 
 ## USAGE
 
-The usage is straightforward. Calling `wslcompact` without arguments compacts all the WSL images. Or you can compact a single one passing its name as an argument, for instance `wslcompact Ubuntu`. It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. The list of names of the installed distros is accessible by typing `wsl -l` in any powershell terminal. with the `-i` info mode, it wont compact the images providing only the info.
+The usage is straightforward: 
+- Calling `wslcompact` without arguments compacts all the WSL images. 
+- You can compact specific distros by passing their names as parameters, for instance `wslcompact Ubuntu`. 
+- When using the `-i` info mode option, wslcompact won't modify the images, providing only the info.
+
+It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. Should you need the list of names of your distros, it is accessible by typing `wsl -l`. 
 
     Usage: wslcompact [OPTION] [DISTROS]
 
