@@ -40,24 +40,32 @@ scoop uninstall wslcompact
 ## USAGE
 
 The usage is straightforward: 
-- Calling `wslcompact` without arguments compacts all the WSL images. 
-- You can compact specific distros by passing their names as parameters, for instance `wslcompact Ubuntu`. 
-- When using the `-i` info mode option, wslcompact won't modify the images, providing only the info.
+- Calling `wslcompact` without arguments lists all the WSL images and information. No action on images will be performed.
+- You can select specific distros by passing their names as parameters, for instance `wslcompact Ubuntu`. 
+- When using the `-c` compact option, wslcompact will modify the images after confirmation.
+- There is a special mode for data partitions. `-d` allows the compact of data partitions.
 
-It ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. Should you need the list of names of your distros, it is accessible by typing `wsl -l`. 
+the utility ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. Should you need the list of names of your distros, it is accessible by typing `wsl -l`. 
 
-    Usage: wslcompact [OPTION] [DISTROS]
+ ```
+     Usage: wslcompact [OPTIONS] [DISTROS]
 
-    compacts the image file of the DISTROS. If no distro is provided it will compact all the images.
+    wslcompact compacts the images of WSL distros by removing unsused space.
+    If no option is provided, it will default to info mode, without modifying any image.
+    If no distro is provided it will process all the installed images.
+    NOTE: WSL will be shutdown for compacting the images.
 
     Options:
-        -i   run in info mode, providing data without compacting.
-        -h   prints this help
+        -c   Compacting mode: process the selected distros compacting the images.
+        -d   Enable the processing of data images. Default is disabled.
+        -y   Perform actions without asking for confirmation.
+        -h   Prints this help
 
-    Examples: 
+    Examples:
         wslcompact
-        wslcompact -i
-        wslcompact Ubuntu Kali
+        wslcompact -c -d
+        wslcompact -c -y Ubuntu Kali
+```
 
 
 if your C: drive doesn't have enough temporal free space, the program won't compact that distro. Just change the TEMP folder before calling the function. So, instead of a simple `wslcompact`, just do:
@@ -66,3 +74,49 @@ $env:TEMP="Z:\your temp\folder"
 wslcompact
 ```
 The new TEMP folder will be active only for that PowerShell terminal session, so no problem at all for the rest of the system and it won't leave garbage.
+
+A typical output would be:
+
+```
+PS> wslcompact
+ WSL compact, v3.2023.01.30
+ (C) 2023 Oscar Lopez
+ wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
+
+ Distro's name:  Ubuntu
+ Image file:     C:\Users\Oki\WSL\Ubuntu\ext4.vhdx
+ Current size:   12864 MB
+ Estimated size: 7700 ± 188 MB
+ The estimated process time using an SSD is about 2 minutes.
+
+ Distro's name:  Kali
+ Image file:     C:\Users\Oki\WSL\Kali\ext4.vhdx
+ Current size:   1579 MB
+ Estimated size: 723 ± 18 MB
+ The estimated process time using an SSD is about 1 minutes.
+
+ Distro's name:  Arch
+ Image file:     C:\Users\Oki\WSL\Arch\ext4.vhdx
+ Current size:   1075 MB
+ Estimated size: 860 ± 21 MB
+ The estimated process time using an SSD is about 1 minutes.
+```
+
+Compacting the Ubuntu image assuming 'yes':
+```
+PS> wslcompact -c -y Ubuntu
+
+ WSL compact, v3.2023.01.30
+ (C) 2023 Oscar Lopez
+ wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
+
+ Distro's name:  Ubuntu
+ Image file:     C:\Users\Oki\WSL\Ubuntu\ext4.vhdx
+ Current size:   12864 MB
+ Estimated size: 7700 ± 188 MB
+ The estimated process time using an SSD is about 2 minutes.
+ Import in progress, this may take a few minutes.
+The operation completed successfully.
+ Compacted from 12864 MB to 7728 MB
+```
+

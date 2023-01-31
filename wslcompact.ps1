@@ -68,7 +68,7 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
         else {
             $estimated = ((wsl -d "$wsl_distro" -e df /) | select-string " +\d+ +(\d+)").Matches[0].Groups[1].Value
             $estimated = [long]($estimated/1024)
-            Write-Host " Estimated size: $([long]($estimated * ((($sf - 1) / 2) + 1))) ± $([long]($estimated * ($sf - 1) / 2)) MB"
+            Write-Host " Estimated size: $([long]($estimated * ((($sf - 1) / 2) + 1))) +/- $([long]($estimated * ($sf - 1) / 2)) MB"
             Write-Host " The estimated process time using an SSD is about $([math]::ceiling($estimated/4000)) minutes."
         }
         if (($estimated * $sf) -lt ($freedisk/1MB)) {
