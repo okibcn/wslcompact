@@ -107,8 +107,7 @@ PS> wslcompact
 
 Compacting the Ubuntu image assuming 'yes':
 ```
-PS> wslcompact -c -y Ubuntu
-
+PS> wslcompact -c Ubuntu
  WSL compact, v4.2023.01.31
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
