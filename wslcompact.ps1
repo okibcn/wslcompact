@@ -1,8 +1,8 @@
-#  WSL compact, v3.2023.01.30
-# 
-#  (C) 2023 Oscar Lopez. 
+#  WSL compact, v4.2023.01.31
+#
+#  (C) 2023 Oscar Lopez.
 #  For more information visit: https://github.com/okibcn/wslcompact
-# 
+#
 
 $sf = 1.05
 $compact = $false
@@ -10,40 +10,41 @@ $data = $false
 $force = $false
 $help = $false
 $target_distros = foreach ($arg in $args) {
-    if ($arg[0] -eq '-') { 
+    if ($arg[0] -eq '-') {
         $compact = $compact -or ("Cc" -match $arg[1])
         $data = $data -or ("Dd" -match $arg[1])
         $force = $force -or ("Yy" -match $arg[1])
         $help = $help -or ("Hh" -match $arg[1])
     }
-    else { 
+    else {
         $arg
     }
 }
-Write-Host " WSL compact, v3.2023.01.30
- (C) 2023 Oscar Lopez 
+Write-Host " WSL compact, v4.2023.01.31
+ (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact"
 
 if ($help) {
     Write-Host "
-    
-    Usage: wslcompact [OPTIONS] [DISTROS]
 
-    wslcompact compacts the images of WSL distros by removing unsused space.
-    If no option is provided, it will default to info mode, without modifying any image.
-    If no distro is provided it will process all the installed images.
-    NOTE: WSL will be shutdown for compacting the images.
+ Usage: wslcompact [OPTIONS] [DISTROS]
 
-    Options:
-        -c   Compacting mode: process the selected distros compacting the images.
-        -d   Enable the processing of data images. Default is disabled.
-        -y   Perform actions without asking for confirmation.
-        -h   Prints this help
+ wslcompact compacts the images of WSL distros by removing unsused space.
+ If no option is provided, it will default to info mode, without modifying any image.
+ If no distro is provided it will process all the installed images.
+ NOTE: WSL will be shutdown for compacting the images.
 
-    Examples: 
-        wslcompact
-        wslcompact -c -d
-        wslcompact -c -y Ubuntu Kali
+ Options:
+  no opt. Provides name, image file path, current size, and estimated new size information.
+     -c   Compacting mode: process the selected distros compacting the images.
+     -y   replaces selected images without asking for confirmation.
+     -d   Enable the processing of data images. Default is disabled.
+     -h   Prints this help
+
+ Examples:
+     wslcompact
+     wslcompact -c -d
+     wslcompact -c -y Ubuntu Kali
 
     "
     exit 0
@@ -67,37 +68,38 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
         }
         else {
             $estimated = ((wsl -d "$wsl_distro" -e df /) | select-string " +\d+ +(\d+)").Matches[0].Groups[1].Value
-            $estimated = [long]($estimated/1024)
+            $estimated = [long]($estimated / 1024)
             Write-Host " Estimated size: $([long]($estimated * ((($sf - 1) / 2) + 1))) +/- $([long]($estimated * ($sf - 1) / 2)) MB"
             Write-Host " The estimated process time using an SSD is about $([math]::ceiling($estimated/4000)) minutes."
         }
-        if (($estimated * $sf) -lt ($freedisk/1MB)) {
+        if (($estimated * $sf) -lt ($freedisk / 1MB)) {
             # There is enough free space in the TEMP drive or a data image.
             if ($compact) {
-                # we are not in info mode we process the image.
+                # we are in compact mode, we process the image.
                 if ((!$data) -and ("$wsl_distro" -match "data")) {
                     Write-Host " Bypassing data image. use -d option to force processing of data images."
                     Continue
                 }
-                $answer = if ($force) {'y'} else {read-host -prompt " Are you sure to process the image (y/N)"}
-                if ($answer -match 'y') {
-                    Write-Host " " -NoNewLine
-                    remove-item "$tmp_folder/*" -Recurse -Force 
-                    wsl --shutdown
-                    cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -"
-                    wsl --shutdown
-                    if (Test-Path "$tmp_folder/ext4.vhdx") {
-                        Move-Item "$tmp_folder/ext4.vhdx" "$wsl_path" -Force
-                        wsl --unregister wslclean | Out-Null
-                        $size2 = (Get-Item -Path "$wsl_path\ext4.vhdx").Length / 1MB
-                        Write-Host " Compacted from $size1 MB to $size2 MB`n"
+                Write-Host " NOTE: You can safely cancel at any time by pressing Ctrl-C`n " -NoNewLine
+                remove-item "$tmp_folder/*" -Recurse -Force
+                wsl --shutdown
+                cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -"
+                wsl --shutdown
+                if (Test-Path "$tmp_folder/ext4.vhdx") {
+                    Move-Item "$tmp_folder/ext4.vhdx" "$tmp_folder/$wsl_distro.vhdx" -Force
+                    wsl --unregister wslclean | Out-Null
+                    $size2 = (Get-Item -Path "$tmp_folder/$wsl_distro.vhdx").Length / 1MB
+                    Write-Host " New Image compacted from $size1 MB to $size2 MB"
+                    $answer = if ($force) { 'y' } else { read-host -prompt "Do you want to apply changes and use the new image (y/N)" }
+                    if ($answer -match 'y') {
+                        Move-Item "$tmp_folder/$wsl_distro.vhdx" "$wsl_path/ext4.vhdx" -Force
                     }
-                    else {
-                        Write-Host " WARNING: wslcompact found errors in the current image. It could be a storage problem,"
-                        Write-Host "          a corrupted ext4 filesystem, or any other issue. Image not processed."
-                    }            
-                }            
-            }        
+                }
+                else {
+                    Write-Host " WARNING: wslcompact found errors in the current image. It could be a storage problem,"
+                    Write-Host "          a corrupted ext4 filesystem, or any other issue. Image not processed."
+                }
+            }
         }
         else {
             # There isn't enough free space in the TEMP drive
