@@ -90,9 +90,10 @@ Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach
                     wsl --unregister wslclean | Out-Null
                     $size2 = (Get-Item -Path "$tmp_folder/$wsl_distro.vhdx").Length / 1MB
                     Write-Host " New Image compacted from $size1 MB to $size2 MB"
-                    $answer = if ($force) { 'y' } else { read-host -prompt "Do you want to apply changes and use the new image (y/N)" }
+                    $answer = if ($force) { 'y' } else { read-host -prompt " Do you want to apply changes and use the new image (y/N)" }
                     if ($answer -match 'y') {
                         Move-Item "$tmp_folder/$wsl_distro.vhdx" "$wsl_path/ext4.vhdx" -Force
+                        Write-Host " Image replaced for distro: $wsl_distro"
                     }
                 }
                 else {

@@ -48,7 +48,7 @@ The usage is straightforward:
 the utility ensures a minimal size and you end up with contiguous files for faster access in old HD-based systems. Should you need the list of names of your distros, it is accessible by typing `wsl -l`. 
 
  ```
-     Usage: wslcompact [OPTIONS] [DISTROS]
+    Usage: wslcompact [OPTIONS] [DISTROS]
 
     wslcompact compacts the images of WSL distros by removing unsused space.
     If no option is provided, it will default to info mode, without modifying any image.
@@ -56,9 +56,10 @@ the utility ensures a minimal size and you end up with contiguous files for fast
     NOTE: WSL will be shutdown for compacting the images.
 
     Options:
+    no opt. Provides name, image file path, current size, and estimated new size information.
         -c   Compacting mode: process the selected distros compacting the images.
+        -y   replaces selected images without asking for confirmation.
         -d   Enable the processing of data images. Default is disabled.
-        -y   Perform actions without asking for confirmation.
         -h   Prints this help
 
     Examples:
@@ -117,8 +118,11 @@ PS> wslcompact -c -y Ubuntu
  Current size:   12864 MB
  Estimated size: 7700 ± 188 MB
  The estimated process time using an SSD is about 2 minutes.
+ NOTE: You can safely cancel at any time by pressing Ctrl-C
  Import in progress, this may take a few minutes.
 The operation completed successfully.
- Compacted from 12864 MB to 7728 MB
+ New Image compacted from 12864 MB to 7728 MB
+ Do you want to apply changes and use the new image (y/N): y
+ Image replaced for distro: Ubuntu
 ```
 
