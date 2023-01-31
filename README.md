@@ -75,7 +75,9 @@ wslcompact
 ```
 The new TEMP folder will be active only for that PowerShell terminal session, so no problem at all for the rest of the system and it won't leave garbage.
 
-A typical output would be:
+## EXAMPLES
+
+A typical operation would be:
 
 ```
 PS> wslcompact
