@@ -82,7 +82,7 @@ A typical operation would be:
 
 ```
 PS> wslcompact
- WSL compact, v3.2023.01.30
+ WSL compact, v4.2023.01.31
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
 
@@ -109,7 +109,7 @@ Compacting the Ubuntu image assuming 'yes':
 ```
 PS> wslcompact -c -y Ubuntu
 
- WSL compact, v3.2023.01.30
+ WSL compact, v4.2023.01.31
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
 
