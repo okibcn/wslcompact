@@ -18,7 +18,7 @@ By default it will perform in info mode, no action on images. If no distro is sp
 
 ## INSTALLATION
 
-The easier way to install nano is by using **[Scoop package manager](https://scoop.sh/)**.
+The easier way to install wslcompact is by using **[Scoop package manager](https://scoop.sh/)**.
 
 1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
 ```pwsh
