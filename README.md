@@ -105,7 +105,7 @@ PS> wslcompact
  The estimated process time using an SSD is about 1 minutes.
 ```
 
-Compacting the Ubuntu image assuming 'yes':
+Compacting the Ubuntu image with confirmation:
 ```
 PS> wslcompact -c Ubuntu
  WSL compact, v4.2023.01.31
