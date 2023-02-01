@@ -11,7 +11,7 @@ The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 fi
 - Current size of the image file.
 - Estimated compacted size.
 
-By default it will perform in active mode. and if no distro is specified, it will compact all the installed images sequentially providing also the info about the resulting compacted size.
+By default it will perform in info mode, no action on images. If no distro is specified, it will target all the installed images sequentially. It operates in safe mode during the compact process, preventing any unwanted side effect in case of failure.
 
 
 ## INSTALLATION
