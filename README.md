@@ -2,6 +2,8 @@
 
 Compacts the size of the WSL images by removing unused empty space.
 
+(Do you like this utility? give it a ⭐)
+
 
 ## FEATURES
 
