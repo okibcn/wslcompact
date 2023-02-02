@@ -1,6 +1,6 @@
-#  WSL compact, v4.2023.01.31
+#  WSL compact v5.0 2023.02.02 (Groundhog edition)
 #
-#  (C) 2023 Oscar Lopez.
+#  (C) 2023 Oscar Lopez
 #  For more information visit: https://github.com/okibcn/wslcompact
 #
 
@@ -20,7 +20,7 @@ $target_distros = foreach ($arg in $args) {
         $arg
     }
 }
-Write-Host " WSL compact, v4.2023.01.31
+Write-Host " WSL compact v5.0 2023.02.02 (Groundhog edition)
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact"
 
@@ -47,6 +47,16 @@ if ($help) {
      wslcompact -c -y Ubuntu Kali
 
     "
+    exit 0
+}
+$wsl_version=(wsl --version)[0].split(' ')[-1]
+if ($wsl_version -lt "1.0"){
+    Write-Host "
+ WARNING: 
+     your are using wsl version $wsl_version. wslcompact requires WSL version 1.0.0 or higher. 
+     You can update WSL typing: wsl --update in PowerShell or using the Microsoft Store.
+ 
+"
     exit 0
 }
 $tmp_folder = "$Env:TEMP\wslcompact"
