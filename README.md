@@ -18,7 +18,7 @@ By default it will perform in info mode, no action on images. If no distro is sp
 
 ## INSTALLATION
 
-Before installing wslcompact, enture your WSL installation is up to date. You can dod that by typing wsl --update in PowerShell. WSL compact requires at least WSL version 1.0.0.
+Before installing wslcompact, ensure your WSL installation is up to date. You can do that by typing wsl --update in PowerShell. WSL compact requires at least WSL version 1.0.0.
 
 The easier way to install wslcompact is by using **[Scoop package manager](https://scoop.sh/)**.
 
@@ -86,7 +86,7 @@ A typical operation would be:
 
 ```
 PS> wslcompact
- WSL compact, v4.2023.01.31
+ WSL compact, v5.0 2023.02.02 (Groundhog edition)
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
 
@@ -112,7 +112,7 @@ PS> wslcompact
 Compacting the Ubuntu image with confirmation:
 ```
 PS> wslcompact -c Ubuntu
- WSL compact, v4.2023.01.31
+ WSL compact, v5.0 2023.02.02 (Groundhog edition)
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
 
