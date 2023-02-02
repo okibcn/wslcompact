@@ -18,6 +18,8 @@ By default it will perform in info mode, no action on images. If no distro is sp
 
 ## INSTALLATION
 
+Before installing wslcompact, enture your WSL installation is up to date. You can dod that by typing wsl --update in PowerShell. WSL compact requires at least WSL version 1.0.0.
+
 The easier way to install wslcompact is by using **[Scoop package manager](https://scoop.sh/)**.
 
 1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
