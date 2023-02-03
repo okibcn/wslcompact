@@ -50,5 +50,4 @@ Write-Host "Done."
 Expand-Archive -LiteralPath "$WCTEMP/wclatest.zip" -DestinationPath "$WCTEMP" | Out-Null
 Copy-Item "$WCTEMP/WslCompact" "$TARGET" -Force -Recurse | Out-Null
 Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
-Write-Host "WslCompact Module installed. Reopen PowerShell to comlete installation,"
-Write-Host "Or in a new PowerShell type wslcompact -h to know more about it."
+Write-Host "WslCompact Module installed. Type wslcompact -h to know more about it."
