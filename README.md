@@ -1,19 +1,20 @@
 # WSLCOMPACT
 
-Compacts the size of the WSL images by removing unused empty space.
+Compacts the size of the ever-growing WSL images.
 
 (Do you like this utility? give it a ⭐)
 
 
 ## FEATURES
 
-The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 filesystem, but it lacks an effective way to shrink the image when the files are removed. This utility compacts the vhdx virtual images of the WSL2 distros. It achieves the minimum possible size. The program provides the following info for each installed distro:
+The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 filesystem, but it lacks an effective way to shrink the image when the files are removed. This utility doesn't require elevated credentials,compacting the VHDX virtual drives of the WSL2 distros, and achieving the minimum possible size. By default it will perform in info mode, no action on images, providing the following information for all the distros installed:
 - Distro's name.
 - image file location.
 - Current size of the image file.
 - Estimated compacted size.
+- Estimated processing time.
 
-By default it will perform in info mode, no action on images. If no distro is specified, it will target all the installed images sequentially. It operates in safe mode during the compact process, preventing any unwanted side effect in case of failure. This is a typical use case: Compacting Ubuntu image with confirmation:
+If no distro is specified, it will target all the installed images sequentially. It operates in safe mode during the compact process, preventing any unwanted side effect in case of failure. This is a typical use case: Compacting Ubuntu image with confirmation:
 ```
 PS> wslcompact -c Ubuntu
  WSL compact, v5.0 2023.02.02 (Groundhog edition)
@@ -38,11 +39,11 @@ The operation completed successfully.
 
 Before installing wslcompact, ensure your WSL installation is up to date. You can do that by typing `wsl --update` in PowerShell. WslCompact requires at least WSL version 1.0.0.
 
-There are two ways to install Wsl Compact, choose your favorite:
+There are two ways to install WslCompact, choose your favorite:
 
 ### OPTION 1: As a PowerShell module
 
-It requires authorisation to run a remote script the first time. If you have done this in the past you don't need it. If you are not sure, in PowerShell type:
+It requires a special setting to run a remote script. If you have set this in the past, then you don't need it. If you are not sure, in PowerShell type:
 ```pwsh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
