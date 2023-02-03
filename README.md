@@ -13,21 +13,51 @@ The Windows Subsystem for Linux (WSL) uses VHDX image files to store the ext4 fi
 - Current size of the image file.
 - Estimated compacted size.
 
-By default it will perform in info mode, no action on images. If no distro is specified, it will target all the installed images sequentially. It operates in safe mode during the compact process, preventing any unwanted side effect in case of failure.
+By default it will perform in info mode, no action on images. If no distro is specified, it will target all the installed images sequentially. It operates in safe mode during the compact process, preventing any unwanted side effect in case of failure. This is a typical use case: Compacting Ubuntu image with confirmation:
+```
+PS> wslcompact -c Ubuntu
+ WSL compact, v5.0 2023.02.02 (Groundhog edition)
+ (C) 2023 Oscar Lopez
+ wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact
+
+ Distro's name:  Ubuntu
+ Image file:     C:\Users\Oki\WSL\Ubuntu\ext4.vhdx
+ Current size:   12864 MB
+ Estimated size: 7700 ± 188 MB
+ The estimated process time using an SSD is about 2 minutes.
+ NOTE: You can safely cancel at any time by pressing Ctrl-C
+ Import in progress, this may take a few minutes.
+The operation completed successfully.
+ New Image compacted from 12864 MB to 7728 MB
+ Do you want to apply changes and use the new image (y/N): y
+ Image replaced for distro: Ubuntu
+```
 
 
 ## INSTALLATION
 
-Before installing wslcompact, ensure your WSL installation is up to date. You can do that by typing wsl --update in PowerShell. WSL compact requires at least WSL version 1.0.0.
+Before installing wslcompact, ensure your WSL installation is up to date. You can do that by typing `wsl --update` in PowerShell. WslCompact requires at least WSL version 1.0.0.
 
-The easier way to install wslcompact is by using **[Scoop package manager](https://scoop.sh/)**.
+There are two ways to install Wsl Compact, choose your favorite:
 
-1. If it is not yet installed in your system, Install Scoop by opening a PowerShell terminal (version 5.1 or later) and running in powershell:
+### OPTION 1: As a PowerShell module
+
+It requires authorisation to run a remote script the first time. If you have done this in the past you don't need it. If you are not sure, in PowerShell type:
 ```pwsh
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
-irm get.scoop.sh | iex
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
-2. Add the wslcompact utility directly from its bucket:
+To install or update the utility, close all your PowerShell instances, open a fresh one and type:
+```pwsh
+iwr -useb  https://raw.githubusercontent.com/okibcn/wslcompact/main/index.html | iex
+```
+To remove the utility, close all your PowerShell instances, open a fresh one and type:
+```pwsh
+Remove-Item "$($env:PSModulePath.split(';')[0])/WwslCompact" -Recurse -Force
+```
+
+### OPTION 2: As a Scoop app
+
+If you use **[Scoop package manager](https://scoop.sh/)**, then you can add the wslcompact utility directly from its bucket. Type in PowerShell these two lines:
 ```pwsh
 scoop bucket add .oki https://github.com/okibcn/Bucket
 scoop install wslcompact
@@ -43,7 +73,7 @@ scoop uninstall wslcompact
 
 ## USAGE
 
-The usage is straightforward: 
+After installation, the usage is straightforward:
 - Calling `wslcompact` without arguments lists all the WSL images and information. No action on images will be performed.
 - You can select specific distros by passing their names as parameters, for instance `wslcompact Ubuntu`. 
 - When using the `-c` compact option, wslcompact will modify the images after confirmation.
