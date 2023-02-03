@@ -49,7 +49,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 To install or update the utility, close all your PowerShell instances, open a fresh one and type:
 ```pwsh
-iwr -useb  https://raw.githubusercontent.com/okibcn/wslcompact/main/index.html | iex
+iwr -useb https://raw.githubusercontent.com/okibcn/wslcompact/main/setup | iex
 ```
 To remove the utility, close all your PowerShell instances, open a fresh one and type:
 ```pwsh
