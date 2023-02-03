@@ -53,7 +53,7 @@ iwr -useb  https://raw.githubusercontent.com/okibcn/wslcompact/main/index.html |
 ```
 To remove the utility, close all your PowerShell instances, open a fresh one and type:
 ```pwsh
-Remove-Item "$($env:PSModulePath.split(';')[0])/WwslCompact" -Recurse -Force
+Remove-Item "$($env:PSModulePath.split(';')[0])/WslCompact" -Recurse -Force
 ```
 
 ### OPTION 2: As a Scoop app
