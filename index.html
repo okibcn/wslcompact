@@ -1,0 +1,54 @@
+# Issue Tracker: https://github.com/okibcn/wslcompact/issues
+# Unlicense License:
+#
+# This is free and unencumbered software released into the public domain.
+#
+# Anyone is free to copy, modify, publish, use, compile, sell, or
+# distribute this software, either in source code form or as a compiled
+# binary, for any purpose, commercial or non-commercial, and by any
+# means.
+#
+# In jurisdictions that recognize copyright laws, the author or authors
+# of this software dedicate any and all copyright interest in the
+# software to the public domain. We make this dedication for the benefit
+# of the public at large and to the detriment of our heirs and
+# successors. We intend this dedication to be an overt act of
+# relinquishment in perpetuity of all present and future rights to this
+# software under copyright law.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
+# For more information, please refer to <http://unlicense.org/>
+
+<#
+.SYNOPSIS
+    ScoopWslCompact installer.
+.DESCRIPTION
+    The installer of WslCompact. For details please check the website
+.LINK
+    https://github.com/okibcn/wslcompact
+#>
+
+# Disable StrictMode in this script
+Set-StrictMode -Off
+
+# Install
+$WCTEMP = "$Env:TEMP/wslcompacttemp"
+$TARGET="$($env:PSModulePath.split(';')[0])"
+Write-Host "Downloading WslCompact..." -NoNewline
+$ZIPURL=(wget -q https://api.github.com/repos/okibcn/wslcompact/releases/latest -O - | ConvertFrom-Json).assets.browser_download_url
+Remove-Item "$WCTEMP" -force -Recurse -ErrorAction SilentlyContinue | Out-Null
+mkdir "$WCTEMP" -ErrorAction SilentlyContinue | Out-Null
+wget -q $ZIPURL -O "$WCTEMP/wclatest.zip"
+Write-Host "Done."
+Expand-Archive -LiteralPath "$WCTEMP/wclatest.zip" -DestinationPath "$WCTEMP" | Out-Null
+Copy-Item "$WCTEMP/WslCompact" "$TARGET" -Force -Recurse | Out-Null
+Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
+Write-Host "WslCompact Module installed. Reopen PowerShell to comlete installation,"
+Write-Host "Or in a new PowerShell type wslcompact -h to know more about it."
