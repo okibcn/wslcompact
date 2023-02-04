@@ -4,7 +4,7 @@
 # https://github.com/okibcn/nano-for-windows
 # Description: Builds nano for Windows
 
-name: Xbuild4Windows
+name: Release
 on:
 #   schedule:
 #     - cron: '52 0 * * *'
