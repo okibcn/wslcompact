@@ -1,0 +1,75 @@
+# Copyright (c) 2023 okibcn
+# This is free software, licensed under the GNU General Public License v3.0
+# See /LICENSE for more information.
+# https://github.com/okibcn/nano-for-windows
+# Description: Builds nano for Windows
+
+name: Xbuild4Windows
+on:
+#   schedule:
+#     - cron: '52 0 * * *'
+  # runs at 0:52 UTC every day
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Run the build with tmate debugging enabled true/false (default: false)'
+        required: false
+        default: 'false'
+      release:
+        description: 'Type (yes) for release, (no) will generate an artifact (default: no)'
+        required: false
+        default: 'no'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: "⏬ Checkout repository"
+      uses: actions/checkout@v3
+
+    - name: "🐞 Debug session"
+      uses: mxschmitt/action-tmate@v3
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled == 'true'
+        ## More info at https://til.simonwillison.net/github-actions/debug-tmate
+        ##           or https://github.com/mxschmitt/action-tmate
+
+    - name: "📦 Create Package"
+      run: |
+        ############################
+        ##                          ##
+        ##      CREATE PACKAGE      ##
+        ##                          ##
+        ############################
+
+        cp LICENSE README* -t WslCompact
+        VERSION=$(cat WslCompact/WslCompact.psm1 |  grep -Po "^#.*v([\d\.\-]+)" |  grep -Po "([\d\.\-]+)")        
+        zip "./WslCompact-v$VERSION.zip WslCompact
+        echo "VERSION=${VERSION}" >>$GITHUB_ENV
+
+    - name: "👍 Upload Artifact"
+      uses: actions/upload-artifact@v3
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.release != 'yes'
+      with:
+        name: ${{ env.VERSION }}
+        path: |
+          *.zip
+
+    - name: "🎉 Publish a new release"
+      uses: softprops/action-gh-release@v0.1.15
+      # go to https://github.com/OWNER/REPO/settings/actions and
+      # in "**"Workflow Permissions" section give actions **Read and Write permissions**.
+      if: github.event_name != 'workflow_dispatch' || github.event.inputs.release == 'yes'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        files: ./*.zip
+#         body: |
+#           ${{ env.BODY }}
+
