@@ -49,7 +49,7 @@ jobs:
 
         cp LICENSE README* -t WslCompact
         VERSION=$(cat WslCompact/WslCompact.psm1 |  grep -Po "^#.*v([\d\.\-]+)" |  grep -Po "([\d\.\-]+)")        
-        zip "./WslCompact-v$VERSION.zip" WslCompact
+        zip "./WslCompact-v$VERSION.zip" WslCompact/*
         echo "VERSION=${VERSION}" >>$GITHUB_ENV
 
     - name: "👍 Upload Artifact"
