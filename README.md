@@ -1,6 +1,6 @@
 # WSLCOMPACT
 
-Compacts the size of the ever-growing WSL images.
+Safely compacts the size of the ever-growing WSL vhdx images.
 
 (Do you like this utility? give it a ⭐)
 
@@ -43,7 +43,7 @@ There are two ways to install WslCompact, choose your favorite:
 
 ### OPTION 1: As a PowerShell module
 
-It requires a special setting to run a remote script. If you have set this in the past, then you don't need it. If you are not sure, in PowerShell type:
+It requires a special setting to run a remote script. If you have set it in the past, then you don't need it anymore. If you are not sure, in PowerShell just type:
 ```pwsh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
