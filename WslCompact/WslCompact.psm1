@@ -1,4 +1,4 @@
-#  WslCompact v7.0 2023.02.03
+#  WslCompact v7.0 2023.02.08
 #  (C) 2023 Oscar Lopez.
 #  For more information visit: https://github.com/okibcn/wslcompact
 #
@@ -20,7 +20,7 @@ function WslCompact {
             $arg
         }
     }
-    Write-Host " WslCompact v6.0 2023.02.03
+    Write-Host " WslCompact v7.0 2023.02.08
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact"
 
