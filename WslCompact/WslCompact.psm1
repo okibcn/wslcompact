@@ -1,4 +1,4 @@
-#  WslCompact v7.0 2023.02.08
+#  WslCompact v8.0 2023.02.13
 #  (C) 2023 Oscar Lopez.
 #  For more information visit: https://github.com/okibcn/wslcompact
 #
@@ -20,7 +20,7 @@ function WslCompact {
             $arg
         }
     }
-    Write-Host " WslCompact v7.0 2023.02.08
+    Write-Host " WslCompact v8.0 2023.02.13
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact"
 
@@ -51,17 +51,17 @@ function WslCompact {
     $wsl_version = (wsl --version)[0].split(' ')[-1]
     if ($wsl_version -lt "1.0") {
         Write-Host "
- WARNING: 
-     your are using wsl version $wsl_version. wslcompact requires WSL version 1.0.0 or higher. 
+ WARNING:
+     your are using wsl version $wsl_version. wslcompact requires WSL version 1.0.0 or higher.
      You can update WSL typing: wsl --update in PowerShell or using the Microsoft Store.
- 
+
 "
         return
     }
     $tmp_folder = "$Env:TEMP\wslcompact"
     $freedisk = (Get-PSDrive $env:TEMP[0]).free
     mkdir "$tmp_folder" -ErrorAction SilentlyContinue | Out-Null
-    Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{* | ForEach-Object {
+    Get-ChildItem "HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss\`{*" | ForEach-Object {
         $wsl_ = Get-ItemProperty $_.PSPath
         $wsl_distro = $wsl_.DistributionName
         $wsl_path = if ($wsl_.BasePath.StartsWith('\\')) { $wsl_.BasePath.Substring(4) } else { $wsl_.BasePath }
@@ -92,17 +92,26 @@ function WslCompact {
                     Write-Host " NOTE: You can safely cancel at any time by pressing Ctrl-C`n " -NoNewLine
                     remove-item "$tmp_folder/*" -Recurse -Force
                     wsl --shutdown
-                    cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslclean ""$tmp_folder"" -"
+                    cmd /c "wsl --export ""$wsl_distro"" - | wsl --import wslcompact ""$tmp_folder"" -"
                     wsl --shutdown
                     if (Test-Path "$tmp_folder/ext4.vhdx") {
                         Move-Item "$tmp_folder/ext4.vhdx" "$tmp_folder/$wsl_distro.vhdx" -Force
-                        wsl --unregister wslclean | Out-Null
+                        wsl --unregister wslcompact | Out-Null
                         $size2 = (Get-Item -Path "$tmp_folder/$wsl_distro.vhdx").Length / 1MB
                         Write-Host " New Image compacted from $size1 MB to $size2 MB"
                         $answer = if ($force) { 'y' } else { read-host -prompt " Do you want to apply changes and use the new image (y/N)" }
                         if ($answer -match 'y') {
                             Move-Item "$tmp_folder/$wsl_distro.vhdx" "$wsl_path/ext4.vhdx" -Force
-                            Write-Host " Image replaced for distro: $wsl_distro"
+                            if (-not (test-path "$tmp_folder/$wsl_distro.vhdx")) {
+                                Write-Host " Image replaced for distro: $wsl_distro"
+                            }else{
+                                Write-Host " WARNING:
+ There was a problem while replacing the image. The optimized image will remain 
+ available at $tmp_folder/$wsl_distro.vhdx in case you still have a problem with
+ your old VHDX. Please ensure WLS is shutdown before replacing the image.
+ wslcompact will exit now nicely."
+                                return
+                            }                       
                         }
                     }
                     else {
