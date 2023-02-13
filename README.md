@@ -1,9 +1,16 @@
-# WSLCOMPACT
+<div align="center">
+
+# **WSLCOMPACT**
+
+[![Release](https://github.com/okibcn/wslcompact/actions/workflows/Release.yml/badge.svg)](https://github.com/okibcn/wslcompact/actions/workflows/Release.yml)
+![Version](https://img.shields.io/github/v/release/okibcn/wslcompact) [![Github All Releases](https://img.shields.io/github/downloads/okibcn/wslcompact/total.svg)]()
+
 
 Safely compacts the size of the ever-growing WSL vhdx images.
 
 (Do you like this utility? give it a ⭐)
 
+</div></br></br>
 
 ## FEATURES
 
