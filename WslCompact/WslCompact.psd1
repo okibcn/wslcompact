@@ -12,7 +12,7 @@
 RootModule = 'WslCompact.psm1'
 
 # Version number of this module.
-ModuleVersion = '6.0'
+ModuleVersion = '8.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -33,7 +33,7 @@ Copyright = '(c) Oscar Lopez. All rights reserved.'
 Description = 'Compacts the size of the ever-growing WSL images'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.1'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
