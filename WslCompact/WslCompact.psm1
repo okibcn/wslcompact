@@ -1,4 +1,4 @@
-#  WslCompact v8.5 2023.02.16
+#  WslCompact v8.7 2023.03.01
 #  (C) 2023 Oscar Lopez.
 #  For more information visit: https://github.com/okibcn/wslcompact
 #
@@ -20,7 +20,7 @@ function WslCompact {
             $arg
         }
     }
-    Write-Host " WslCompact v8.5 2023.02.16
+    Write-Host " WslCompact v8.7 2023.03.01
  (C) 2023 Oscar Lopez
  wslcompact -h for help. For more information visit: https://github.com/okibcn/wslcompact"
 
@@ -76,7 +76,8 @@ function WslCompact {
                 $estimated = [long]($size1)
             }
             else {
-                $estimated = ((wsl -d "$wsl_distro" -e df /) | Select-String -Pattern  "(?<=^\/dev[^\s]+\s+\d+\s+)\d+" ).Matches[0].Value
+                $dfpath=((wsl -d "$wsl_distro" which df) 2>$null | sls "^/.*df$").Matches.value
+                $estimated = ((wsl -d "$wsl_distro" -e "$dfpath" /) | sls -Pattern  "(?<=^\/dev[^\s]+\s+\d+\s+)\d+" ).Matches[0].Value
                 $estimated = [long]($estimated / 1024)
                 Write-Host " Estimated size: $([long]($estimated * ((($sf - 1) / 2) + 1))) +/- $([long]($estimated * ($sf - 1) / 2)) MB"
                 Write-Host " The estimated process time using an SSD is about $([math]::ceiling($estimated/4000)) minutes."
