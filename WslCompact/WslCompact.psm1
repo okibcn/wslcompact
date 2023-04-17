@@ -109,7 +109,7 @@ function WslCompact {
                                 Write-Host " WARNING:
  There was a problem while replacing the image. The optimized image will remain 
  available at $tmp_folder/$wsl_distro.vhdx in case you still have a problem with
- your old VHDX. Please ensure WLS is shutdown before replacing the image.
+ your old VHDX. Please ensure WSL is shutdown before replacing the image.
  wslcompact will exit now nicely."
                                 return
                             }                       
