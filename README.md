@@ -8,7 +8,7 @@
 
 Safely compacts the size of the ever-growing WSL vhdx images.
 
-(Do you like this utility? give it a ⭐)
+(Do you like this utility? give it a ⭐ and share it)
 
 </div></br></br>
 
