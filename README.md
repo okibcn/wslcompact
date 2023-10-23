@@ -58,6 +58,9 @@ To install or update the utility, close all your PowerShell instances, open a fr
 ```pwsh
 iwr -useb https://raw.githubusercontent.com/okibcn/wslcompact/main/setup | iex
 ```
+
+#### UNINSTALLATION
+
 To remove the utility, close all your PowerShell instances, open a fresh one and type:
 ```pwsh
 Remove-Item "$($env:PSModulePath.split(';')[0])/WslCompact" -Recurse -Force
@@ -74,6 +77,8 @@ To update the app just type:
 ```pwsh
 scoop update wslcompact
 ```
+
+#### UNINSTALLATION
 To remove the app just type:
 ```pwsh
 scoop uninstall wslcompact
