@@ -29,10 +29,10 @@ function WslCompact {
 
  Usage: wslcompact [OPTIONS] [DISTROS]
 
- wslcompact compacts the images of WSL distros by removing unsused space.
+ wslcompact compacts the images of WSL distros by removing unused space.
  If no option is provided, it will default to info mode, without modifying any image.
- If no distro is provided it will process all the installed images.
- NOTE: WSL will be shutdown for compacting the images.
+ If no distro is provided, it will process all the installed images.
+ NOTE: WSL will be shut down for compacting the images.
 
  Options:
   no opt. Provides distro name, path, size, and estimated new size information.
