@@ -48,6 +48,6 @@ mkdir "$WCTEMP" -ErrorAction SilentlyContinue | Out-Null
 iwr $ZIPURL -OutFile "$WCTEMP/wclatest.zip"
 Write-Host "Done."
 Expand-Archive -LiteralPath "$WCTEMP/wclatest.zip" -DestinationPath "$WCTEMP" | Out-Null
-Copy-Item "$WCTEMP/WslCompact" "$TARGET" -Force -Recurse | Out-Null
+Copy-Item "$WCTEMP/WslCompact" "$TARGET/WslCompact" -Force -Recurse | Out-Null
 Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
 Write-Host "WslCompact Module installed. Type wslcompact -h to know more about it."
