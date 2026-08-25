@@ -6,9 +6,6 @@
 
 name: Release
 on:
-#   schedule:
-#     - cron: '52 0 * * *'
-  # runs at 0:52 UTC every day
   workflow_dispatch:
     inputs:
       debug_enabled:
@@ -21,7 +18,22 @@ on:
         default: 'no'
 
 jobs:
+  smoke:
+    runs-on: windows-latest
+    steps:
+    - name: "⏬ Checkout repository"
+      uses: actions/checkout@v7
+
+    - name: "Module import + help smoke test"
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -Scope Process Bypass -Force
+        Import-Module ./WslCompact/WslCompact.psm1
+        $out = WslCompact -h *>&1 | Out-String
+        if ($out -notmatch 'Usage:') { throw "help output missing" }
+
   build:
+    needs: smoke
     runs-on: ubuntu-latest
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -29,12 +41,10 @@ jobs:
         shell: bash
     steps:
     - name: "⏬ Checkout repository"
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
 
     - name: "🐞 Debug session"
       uses: mxschmitt/action-tmate@v3
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       if: github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled == 'true'
         ## More info at https://til.simonwillison.net/github-actions/debug-tmate
         ##           or https://github.com/mxschmitt/action-tmate
@@ -48,20 +58,22 @@ jobs:
         ############################
 
         cp LICENSE README* -t WslCompact
-        VERSION=$(cat WslCompact/WslCompact.psm1 |  grep -Po "^#.*v([\d\.\-]+)" |  grep -Po "([\d\.\-]+)")        
+        VERSION=$(grep -Po "(?<=^ModuleVersion = ')[^']+" WslCompact/WslCompact.psd1)
         zip "./WslCompact-v$VERSION.zip" WslCompact/*
+        sha256sum "./WslCompact-v$VERSION.zip" > "./WslCompact-v$VERSION.zip.sha256"
         echo "VERSION=${VERSION}" >>$GITHUB_ENV
 
     - name: "👍 Upload Artifact"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v7
       if: github.event_name == 'workflow_dispatch' && github.event.inputs.release != 'yes'
       with:
         name: ${{ env.VERSION }}
         path: |
           *.zip
+          *.zip.sha256
 
     - name: "🎉 Publish a new release"
-      uses: softprops/action-gh-release@v0.1.15
+      uses: softprops/action-gh-release@v3
       # go to https://github.com/OWNER/REPO/settings/actions and
       # in "**"Workflow Permissions" section give actions **Read and Write permissions**.
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.release == 'yes'
@@ -69,7 +81,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ env.VERSION }}
-        files: ./*.zip
+        files: |
+          ./*.zip
+          ./*.zip.sha256
 #         body: |
 #           ${{ env.BODY }}
 
