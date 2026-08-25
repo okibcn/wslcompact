@@ -1,36 +1,16 @@
 # Issue Tracker: https://github.com/okibcn/wslcompact/issues
-# Unlicense License:
-#
-# This is free and unencumbered software released into the public domain.
-#
-# Anyone is free to copy, modify, publish, use, compile, sell, or
-# distribute this software, either in source code form or as a compiled
-# binary, for any purpose, commercial or non-commercial, and by any
-# means.
-#
-# In jurisdictions that recognize copyright laws, the author or authors
-# of this software dedicate any and all copyright interest in the
-# software to the public domain. We make this dedication for the benefit
-# of the public at large and to the detriment of our heirs and
-# successors. We intend this dedication to be an overt act of
-# relinquishment in perpetuity of all present and future rights to this
-# software under copyright law.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-# OTHER DEALINGS IN THE SOFTWARE.
-#
-# For more information, please refer to <http://unlicense.org/>
+# WslCompact installer
+# Copyright (c) 2023 Oscar Lopez (okibcn)
+# Free software licensed under the GNU General Public License v3.0.
+# Full text: https://github.com/okibcn/wslcompact/blob/main/LICENSE
 
 <#
 .SYNOPSIS
-    ScoopWslCompact installer.
+    WslCompact installer.
 .DESCRIPTION
-    The installer of WslCompact. For details please check the website
+    Downloads and installs the latest WslCompact release into the current
+    user's PowerShell module path, verifying the download against the
+    published SHA256 checksum. For details please check the website
 .LINK
     https://github.com/okibcn/wslcompact
 #>
@@ -38,16 +18,46 @@
 # Disable StrictMode in this script
 Set-StrictMode -Off
 
-# Install
-$WCTEMP = "$Env:TEMP/wslcompacttemp"
-$TARGET="$($env:PSModulePath.split(';')[0])"
-Write-Host "Downloading WslCompact..." -NoNewline
-$ZIPURL=(iwr https://api.github.com/repos/okibcn/wslcompact/releases/latest | ConvertFrom-Json).assets.browser_download_url
-Remove-Item "$WCTEMP" -force -Recurse -ErrorAction SilentlyContinue | Out-Null
-mkdir "$WCTEMP" -ErrorAction SilentlyContinue | Out-Null
-iwr $ZIPURL -OutFile "$WCTEMP/wclatest.zip"
-Write-Host "Done."
-Expand-Archive -LiteralPath "$WCTEMP/wclatest.zip" -DestinationPath "$WCTEMP" | Out-Null
-Copy-Item "$WCTEMP/WslCompact" "$TARGET" -Force -Recurse | Out-Null
-Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
-Write-Host "WslCompact Module installed. Type wslcompact -h to know more about it."
+# Install into the running edition's CurrentUser module path (never needs admin,
+# survives OneDrive/Documents redirection). See about_PSModulePath.
+$DOCS = [Environment]::GetFolderPath('MyDocuments')
+$TARGET = if ($PSVersionTable.PSVersion.Major -ge 6) { Join-Path $DOCS 'PowerShell\Modules' }
+    else { Join-Path $DOCS 'WindowsPowerShell\Modules' }
+
+try {
+    New-Item -ItemType Directory $TARGET -Force -ErrorAction Stop | Out-Null
+    # Writability probe: fail loudly here instead of mysteriously at copy time.
+    $probe = Join-Path $TARGET ([IO.Path]::GetRandomFileName())
+    New-Item -ItemType File $probe -ErrorAction Stop | Out-Null
+    Remove-Item $probe -Force
+
+    Write-Host "Downloading WslCompact..." -NoNewline
+    $WCTEMP = "$Env:TEMP/wslcompacttemp"
+    $assets = (iwr https://api.github.com/repos/okibcn/wslcompact/releases/latest -ErrorAction Stop | ConvertFrom-Json).assets
+    $ZIPURL = $assets.browser_download_url | Where-Object { $_ -like '*.zip' } | Select-Object -First 1
+    if (-not $ZIPURL) { throw "no .zip asset found in the latest release" }
+    Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
+    mkdir "$WCTEMP" -ErrorAction Stop | Out-Null
+    iwr $ZIPURL -OutFile "$WCTEMP/wclatest.zip" -ErrorAction Stop
+    # Self-verify against the .sha256 sidecar published with each release.
+    # NOTE: protects against corrupted/tampered assets, not a compromised account.
+    # Releases older than 8.7 have no sidecar; degrade loudly rather than break.
+    $expect = $null
+    try { iwr "$ZIPURL.sha256" -OutFile "$WCTEMP/wclatest.zip.sha256" -ErrorAction Stop; $expect = ((Get-Content "$WCTEMP/wclatest.zip.sha256") -split '\s+')[0] }
+    catch { Write-Warning "No .sha256 checksum published for this release -- skipping verification." }
+    if ($null -ne $expect) {
+        $actual = (Get-FileHash "$WCTEMP/wclatest.zip" -Algorithm SHA256).Hash
+        if ($actual -ine $expect) { throw "SHA256 mismatch (expected $expect, got $actual). Install aborted." }
+    }
+    Write-Host "Done."
+    Expand-Archive -LiteralPath "$WCTEMP/wclatest.zip" -DestinationPath "$WCTEMP" -ErrorAction Stop | Out-Null
+    Copy-Item "$WCTEMP/WslCompact" "$TARGET" -Force -Recurse -ErrorAction Stop | Out-Null
+    Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
+    Write-Host "Installed to $TARGET"
+    Write-Host "WslCompact Module installed. Type wslcompact -h to know more about it."
+}
+catch {
+    Remove-Item "$WCTEMP" -Force -Recurse -ErrorAction SilentlyContinue
+    Write-Warning "Install failed: $($_.Exception.Message)"
+    exit 1
+}

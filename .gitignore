@@ -1,0 +1,24 @@
+# >>> opencode-config auto
+build/
+out/
+target/
+dist/
+coverage/
+node_modules/
+kotlin-js-store/
+__pycache__/
+.venv/
+venv/
+.gradle/
+.kotlin/
+.dart_tool/
+.flutter-plugins-dependencies
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.worktrees/
+*.apk
+*.aab
+.ruff_cache/
+# <<< opencode-config auto

@@ -12,10 +12,10 @@
 RootModule = 'WslCompact.psm1'
 
 # Version number of this module.
-ModuleVersion = '8.0'
+ModuleVersion = '9.0'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
 GUID = '3169a4cc-3870-4ea2-a4b6-64156c107797'
@@ -27,7 +27,7 @@ Author = 'Oscar Lopez'
 CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) Oscar Lopez. All rights reserved.'
+Copyright = '(c) 2023 Oscar Lopez. Licensed under the GNU General Public License v3.0.'
 
 # Description of the functionality provided by this module
 Description = 'Compacts the size of the ever-growing WSL images'
@@ -72,13 +72,13 @@ PowerShellVersion = '5.1'
 FunctionsToExport = 'WslCompact'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = '*'
+AliasesToExport = @()
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -95,7 +95,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('WSL','VHDX','PSEdition_Desktop','PSEdition_Core')
 
         # A URL to the license for this module.
           LicenseUri = 'https://github.com/okibcn/wslcompact/blob/main/LICENSE'
